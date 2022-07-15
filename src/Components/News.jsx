@@ -272,6 +272,12 @@ export default class News extends Component {
       loading: false
     }
   }
+  async componentDidMount(){
+    let url = "https://newsapi.org/v2/top-headlines?category=business&apiKey=5d79a230f6ad4ea5a067d4fab4bd7e57&pageSize=5";
+    let data = await fetch(url);
+    let dataPromised = await data.json();
+    this.setState({articles : dataPromised.articles})
+  }
   render() {
     return (
       <>
@@ -282,7 +288,7 @@ export default class News extends Component {
               return (
                 <>
                   <div className="col-md-4 my-3">
-                    <NewsItems title={element.title} description={element.description} imagUrl={element.urlToImage} />
+                    <NewsItems title={element.title ? element.title.slice(0, 45) : ""} description={element.title ? element.title.slice(0, 88) : ""} imagUrl={element.urlToImage} url = {element.url}/>
                   </div>
                 </>
               )
