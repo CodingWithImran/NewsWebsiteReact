@@ -23,7 +23,7 @@ export default class News extends Component {
       page: 1
     }
   }
-  async componentDidMount() {
+   async updateNews(){
     this.setState({loading: true})
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5d79a230f6ad4ea5a067d4fab4bd7e57&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     let data = await fetch(url);
@@ -32,35 +32,23 @@ export default class News extends Component {
     loading: false
     })
   }
+  async componentDidMount() {
+    this.updateNews();
+  }
   handlepreClick = async () => {
-    console.log(this.state.totalResults)   
     this.setState({loading: true})
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5d79a230f6ad4ea5a067d4fab4bd7e57&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
-        let data = await fetch(url);
-        let parsedData =await data.json();
-        this.setState({
-           articles: parsedData.articles, 
-          page: this.state.page-1,
-          loading: false
-        })
+    this.setState({
+      page: this.state.page - 1,
+    })
+    this.updateNews();
   }
   handleNextClick = async () => {
-    this.setState({loading: true})
-    console.log(this.state.totalResults)   
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5d79a230f6ad4ea5a067d4fab4bd7e57&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
-      let data = await fetch(url);
-      let parsedData =await data.json();
+    this.setState({loading: true, page: this.state.page + 1} )
       if (this.state.page + 1 > Math.ceil(this.state.totalResults/20)){
 
       }
     else{
-      this.setState(
-        { articles: parsedData.articles,
-          page: this.state.page+1,
-          loading: false
-        }
-        
-        )
+      this.updateNews();
     }  
   }
   render() {
@@ -74,7 +62,7 @@ export default class News extends Component {
               return (
                 <>
                   <div className="col-md-4 my-3">
-                    <NewsItems title={element.title ? element.title.slice(0, 45) : ""} description={element.title ? element.title.slice(0, 88) : ""} imagUrl={element.urlToImage} url={element.url} />
+                    <NewsItems title={element.title ? element.title.slice(0, 45) : ""} description={element.title ? element.title.slice(0, 88) : ""} imagUrl={element.urlToImage} url={element.url} author = {!element.author ? "Unknown" : element.author} date = {element.publishedAt}/>
                   </div>
                 </>
               )
